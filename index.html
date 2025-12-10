@@ -95,7 +95,7 @@ Customize: change the `site` object in the <script> near the end to add your pro
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="avatar"><img src="Assets/img/photo2.jpg" alt="profile"></div>
+        <div class="avatar"><img src="assets/profile.jpg" alt="profile"></div>
         <div>
           <h1 id="site-name">Your Name</h1>
           <div id="site-sub" style="color:var(--muted);font-size:13px">CFD • HPC • OpenFOAM</div>
@@ -112,7 +112,7 @@ Customize: change the `site` object in the <script> near the end to add your pro
 
     <main id="home">
       <section class="hero">
-        <div class="photo"><img src="Assets/img/test4.jpg" alt="flow"></div>
+        <div class="photo"><img src="assets/cover_flow.jpg" alt="flow"></div>
         <div class="intro">
           <h2 data-i18n="hero.title">Hello — I'm <span id="author-name">Your Name</span></h2>
           <p data-i18n="hero.desc">I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.</p>
@@ -140,8 +140,8 @@ Customize: change the `site` object in the <script> near the end to add your pro
             <p style="color:var(--muted);margin-top:8px" data-i18n="cv.desc">Master in Fluid Mechanics & Energetics — Add your institutions and dates here. Brief bullets of relevant roles.</p>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-            <a id="download-fr" href="Assets/cv/CV_Thierno_FR.pdf" download data-i18n="cv.downloadFR">Download CV (FR)</a>
-            <a id="download-en" href="Assets/cv/CV_Thierno_EN.pdf" download data-i18n="cv.downloadEN">Download CV (EN)</a>
+            <a id="download-fr" href="assets/CV_Thierno_FR.pdf" download data-i18n="cv.downloadFR">Download CV (FR)</a>
+            <a id="download-en" href="assets/CV_Thierno_EN.pdf" download data-i18n="cv.downloadEN">Download CV (EN)</a>
           </div>
         </div>
       </section>
@@ -188,19 +188,14 @@ Customize: change the `site` object in the <script> near the end to add your pro
       ],
       projects: [
         {
-          id:'p1', title:'Airfoil HLLC study', cover:'Assets/img/Test2.jpg',
+          id:'p1', title:'Airfoil HLLC study', cover:'assets/project_airfoil.jpg',
           short:'HLLC scheme comparison for compressible flow around an aerofoil',
           details:'<h3>Airfoil HLLC study</h3><p>Setup: 2D mesh, mesh refinement near leading edge. Solver: inviscid Euler with HLLC flux. Results: pressure coefficient, shock location, convergence history.</p><p><strong>Repo:</strong> <a href="#">github.com/you/airfoil-hllc</a></p>'
         },
         {
-          id:'p2', title:'Turbulent Jet (LES)', cover:'Assets/img/Test3.jpg',
+          id:'p2', title:'Turbulent Jet (LES)', cover:'assets/project_jet.jpg',
           short:'Large-eddy simulation of a turbulent jet, energy spectra and statistics',
           details:'<h3>Turbulent Jet (LES)</h3><p>Setup: 3D cartesian box, inflow synthetic turbulence, subgrid model WALE. Analysis: RMS, spectra, coherent structures visualization (Q-criterion).</p><p><strong>Repo:</strong> <a href="#">github.com/you/turbulent-jet</a></p>'
-        },
-        {
-          id:'p3', title:'Airfoil HLLC study', cover:'Assets/img/photo3.jpg',
-          short:'HLLC scheme comparison for compressible flow around an aerofoil',
-          details:'<h3>Airfoil HLLC study</h3><p>Setup: 2D mesh, mesh refinement near leading edge. Solver: inviscid Euler with HLLC flux. Results: pressure coefficient, shock location, convergence history.</p><p><strong>Repo:</strong> <a href="#">github.com/you/airfoil-hllc</a></p>'
         }
       ]
     };
@@ -288,3 +283,59 @@ Customize: change the `site` object in the <script> near the end to add your pro
   </script>
 </body>
 </html>
+
+<!-- projects/project-template.html -->
+<!-- Duplicate this file for each project -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projet – Titre du projet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <a href="../index.html">← Retour au portfolio</a>
+  </header>
+
+  <main class="project-page">
+    <h1>Titre du projet</h1>
+    <img src="../assets/img/project-cover.png" alt="Image du projet" class="project-cover" />
+
+    <section>
+      <h2>Résumé</h2>
+      <p>Brève présentation du projet.</p>
+    </section>
+
+    <section>
+      <h2>Objectifs</h2>
+      <ul>
+        <li>Objectif 1</li>
+        <li>Objectif 2</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Méthodologie</h2>
+      <p>Détails techniques : solveur, schéma numérique, maillage, HPC, bibliothèques utilisées…</p>
+    </section>
+
+    <section>
+      <h2>Résultats</h2>
+      <p>Description + possibilité d'ajouter des images, figures, GIFs Paraview.</p>
+      <img src="../assets/img/result1.png" alt="Résultat CFD" />
+    </section>
+
+    <section>
+      <h2>Conclusion</h2>
+      <p>Résumé final et points importants.</p>
+    </section>
+
+    <footer>
+      <a class="github-button" href="https://github.com/username/repo" target="_blank">Voir le code sur GitHub</a>
+    </footer>
+  </main>
+</body>
+</html>
+
