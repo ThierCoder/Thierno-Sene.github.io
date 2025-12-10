@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation d'écoulement autour d'une aile</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <header>
+    <a href="../index.html">← Retour au portfolio</a>
+  </header>
+
+  <main class="project-page">
+    <h1>Simulation d'écoulement autour d'une aile</h1>
+    <img src="../assets/img/airfoil_HLLC.png" alt="Image du projet" class="project-cover" />
+
+    <section>
+      <h2>Résumé</h2>
+      <p>Analyse CFD de l'écoulement autour d'une aile d'avion avec OpenFOAM, utilisant le schéma HLLC d'ordre 2 pour résoudre les équations de Navier–Stokes compressibles.</p>
+    </section>
+
+    <section>
+      <h2>Objectifs</h2>
+      <ul>
+        <li>Étudier la distribution de la pression et des coefficients aérodynamiques.</li>
+        <li>Comparer l'effet de différents maillages et schémas numériques sur les résultats.</li>
+        <li>Valider la solution avec des données expérimentales ou théoriques.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Méthodologie</h2>
+      <p>
+        - Logiciel : OpenFOAM 12<br/>
+        - Schéma numérique : HLLC, ordre 2<br/>
+        - Maillage : SnappyHexMesh avec raffinement près de l’aile<br/>
+        - Conditions aux limites : Inlet velocity, Outlet pressure, Wall no-slip<br/>
+        - Post-traitement : ParaView pour visualisation des vitesses, pressions et tourbillons
+      </p>
+    </section>
+
+    <section>
+      <h2>Résultats</h2>
+      <p>
+        Les simulations montrent les zones de basse et haute pression autour de l’aile et permettent de calculer les coefficients de portance et de traînée. Les résultats sont cohérents avec les modèles théoriques de NACA.
+      </p>
+      <img src="../assets/img/airfoil_result.png" alt="Résultat CFD" />
+    </section>
+
+    <section>
+      <h2>Conclusion</h2>
+      <p>
+        Le projet illustre l’efficacité des schémas HLLC dans la résolution d’écoulements compressibles autour d’une aile. Les résultats peuvent servir de référence pour des études paramétriques ou l’optimisation aérodynamique.
+      </p>
+    </section>
+
+    <footer>
+      <a class="github-button" href="https://github.com/Thierno/airfoil-HLLC" target="_blank">Voir le code sur GitHub</a>
+    </footer>
+  </main>
+</body>
+</html>
 
