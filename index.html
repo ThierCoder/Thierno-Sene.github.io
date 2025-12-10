@@ -1,341 +1,77 @@
-<!--
-Portfolio template for GitHub Pages (single-file)
-Instructions:
-1) Save this file as index.html at the root of a repository.
-2) Put your assets (profile.jpg, project images, CV PDFs) in a folder named /assets/.
-3) Replace the Formspree endpoint in the contact form (action) or configure Netlify Forms / EmailJS.
-4) Commit and push to GitHub. In the repo settings -> Pages, enable GitHub Pages (source: main branch / root).
-5) Optionally add a custom domain in Pages settings.
-
-This single-file template contains:
-- Responsive hero (photo + presentation side-by-side)
-- Projects grid (clickable cards, modal for details)
-- CV section with download links (FR/EN)
-- Contact form (fetch POST to Formspree placeholder)
-- Language switcher EN/FR (client-side)
-- Minimal CSS & JS, easy to adapt
-
-Customize: change the `site` object in the <script> near the end to add your projects, socials, texts and file paths.
--->
-
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Portfolio — CFD Projects</title>
-  <meta name="description" content="CFD portfolio — projects, code, results.">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#4f46e5; --glass: rgba(255,255,255,0.03);
-      --radius:14px; --maxw:1100px; --gap:18px; --ff: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:var(--ff);background:linear-gradient(180deg,#071024 0%, #071827 100%);color:#e6eef8;line-height:1.45}
-    .wrap{max-width:var(--maxw);margin:28px auto;padding:22px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .avatar{width:56px;height:56px;border-radius:10px;overflow:hidden;background:var(--glass);display:flex;align-items:center;justify-content:center}
-    .avatar img{width:100%;height:100%;object-fit:cover}
-    h1{font-size:20px;margin:0}
-    nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-weight:600}
-    nav a:hover{color:var(--accent)}
-
-    /* HERO */
-    .hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:22px;border-radius:18px;margin-bottom:22px}
-    .hero .photo{border-radius:12px;overflow:hidden;min-height:220px;background:#0a1220;display:flex;align-items:center;justify-content:center}
-    .hero .photo img{width:100%;height:100%;object-fit:cover}
-    .intro{padding:6px}
-    .intro h2{margin:0 0 8px 0;font-size:26px}
-    .intro p{color:var(--muted);margin-top:6px}
-    .socials{display:flex;gap:12px;margin-top:12px}
-    .socials a{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--glass);color:var(--muted);text-decoration:none;font-weight:600}
-
-    /* PROJECTS */
-    .section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 0}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:0;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .18s}
-    .card:hover{transform:translateY(-6px)}
-    .card img{width:100%;height:160px;object-fit:cover;display:block}
-    .card .card-body{padding:12px}
-    .card h3{margin:0 0 6px 0;font-size:16px}
-    .card p{margin:0;color:var(--muted);font-size:13px}
-
-    /* CV */
-    .cv-block{display:flex;gap:18px;align-items:flex-start;background:var(--glass);padding:14px;border-radius:12px}
-    .cv-block a{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;text-decoration:none}
-
-    /* CONTACT */
-    .contact{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px}
-    .contact form{display:grid;gap:8px}
-    input,textarea,button{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-    button{background:var(--accent);border:none;color:white;font-weight:700}
-
-    /* FOOTER */
-    footer{margin-top:26px;color:var(--muted);font-size:13px;text-align:center}
-
-    /* modal */
-    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:18px}
-    .modal .box{background:#071424;padding:18px;border-radius:12px;max-width:900px;width:100%;max-height:90vh;overflow:auto}
-
-    @media (max-width:900px){
-      .hero{grid-template-columns:1fr;}
-      .grid{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width:520px){
-      .grid{grid-template-columns:1fr}
-      .brand h1{display:none}
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="avatar"><img src="assets/profile.jpg" alt="profile"></div>
-        <div>
-          <h1 id="site-name">Your Name</h1>
-          <div id="site-sub" style="color:var(--muted);font-size:13px">CFD • HPC • OpenFOAM</div>
-        </div>
-      </div>
-      <nav>
-        <a href="#home" data-i18n="nav.home">Home</a>
-        <a href="#projects" data-i18n="nav.projects">Projects</a>
-        <a href="#cv" data-i18n="nav.cv">CV</a>
-        <a href="#contact" data-i18n="nav.contact">Contact</a>
-        <button id="lang-toggle" style="margin-left:12px;padding:8px 10px;border-radius:8px;background:var(--glass);border:none;color:var(--muted);font-weight:700">FR</button>
-      </nav>
-    </header>
-
-    <main id="home">
-      <section class="hero">
-        <div class="photo"><img src="assets/cover_flow.jpg" alt="flow"></div>
-        <div class="intro">
-          <h2 data-i18n="hero.title">Hello — I'm <span id="author-name">Your Name</span></h2>
-          <p data-i18n="hero.desc">I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.</p>
-          <div class="socials" id="socials">
-            <!-- social links populated by JS -->
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" style="margin-top:20px">
-        <div class="section-title">
-          <h2 data-i18n="projects.title">Projects</h2>
-          <div style="color:var(--muted);font-size:13px" data-i18n="projects.subtitle">Click a card to see details</div>
-        </div>
-        <div class="grid" id="projects-grid">
-          <!-- project cards injected by JS -->
-        </div>
-      </section>
-
-      <section id="cv" style="margin-top:22px">
-        <div class="section-title"><h2 data-i18n="cv.title">CV</h2></div>
-        <div class="cv-block">
-          <div style="flex:1">
-            <strong data-i18n="cv.summary">Education & Experience</strong>
-            <p style="color:var(--muted);margin-top:8px" data-i18n="cv.desc">Master in Fluid Mechanics & Energetics — Add your institutions and dates here. Brief bullets of relevant roles.</p>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-            <a id="download-fr" href="assets/CV_Thierno_FR.pdf" download data-i18n="cv.downloadFR">Download CV (FR)</a>
-            <a id="download-en" href="assets/CV_Thierno_EN.pdf" download data-i18n="cv.downloadEN">Download CV (EN)</a>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" style="margin-top:22px">
-        <div class="section-title"><h2 data-i18n="contact.title">Contact</h2></div>
-        <div class="contact">
-          <form id="contact-form" action="https://formspree.io/f/your_form_id" method="POST">
-            <input type="text" name="name" placeholder="Your name" required>
-            <input type="email" name="email" placeholder="Your email" required>
-            <input type="text" name="subject" placeholder="Subject">
-            <textarea name="message" placeholder="Message" rows="6" required></textarea>
-            <button type="submit" data-i18n="contact.send">Send message</button>
-            <div id="form-result" style="color:var(--muted);font-size:13px;margin-top:8px"></div>
-          </form>
-          <div style="color:var(--muted);font-size:13px;margin-top:12px">Note: GitHub Pages does not run server-side code. Use Formspree, Netlify Forms, EmailJS or link to your email.</div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer>
-      <div>Built with ❤️ — replace with your institution (e.g. École Centrale de Lyon)</div>
-    </footer>
-  </div>
-
-  <!-- Modal for project details -->
-  <div class="modal" id="modal">
-    <div class="box" role="dialog" aria-modal="true">
-      <button id="close-modal" style="float:right;background:none;border:none;color:var(--muted);font-weight:700">✕</button>
-      <div id="modal-content"></div>
-    </div>
-  </div>
-
-  <script>
-    // SITE DATA - edit this object to add your projects and socials
-    const site = {
-      name: 'Thierno Sène',
-      subtitle: 'CFD • HPC • OpenFOAM',
-      socials: [
-        {name:'GitHub', url:'https://github.com/yourname'},
-        {name:'LinkedIn', url:'https://www.linkedin.com/in/yourname'},
-        {name:'YouTube', url:'https://youtube.com/yourchannel'}
-      ],
-      projects: [
-        {
-          id:'p1', title:'Airfoil HLLC study', cover:'assets/project_airfoil.jpg',
-          short:'HLLC scheme comparison for compressible flow around an aerofoil',
-          details:'<h3>Airfoil HLLC study</h3><p>Setup: 2D mesh, mesh refinement near leading edge. Solver: inviscid Euler with HLLC flux. Results: pressure coefficient, shock location, convergence history.</p><p><strong>Repo:</strong> <a href="Assets/projects/reacteurChimique.html"'
-        },
-        {
-          id:'p2', title:'Turbulent Jet (LES)', cover:'assets/project_jet.jpg',
-          short:'Large-eddy simulation of a turbulent jet, energy spectra and statistics',
-          details:'<h3>Turbulent Jet (LES)</h3><p>Setup: 3D cartesian box, inflow synthetic turbulence, subgrid model WALE. Analysis: RMS, spectra, coherent structures visualization (Q-criterion).</p><p><strong>Repo:</strong> <a href="#">github.com/you/turbulent-jet</a></p>'
-        }
-      ]
-    };
-
-    // translations
-    const i18n = {
-      en:{
-        'nav.home':'Home','nav.projects':'Projects','nav.cv':'CV','nav.contact':'Contact',
-        'hero.title':'Hello — I\'m <span id="author-name">'+site.name+'</span>',
-        'hero.desc':'I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.',
-        'projects.title':'Projects','projects.subtitle':'Click a card to see details',
-        'cv.title':'CV','cv.summary':'Education & Experience','cv.desc':'Master in Fluid Mechanics & Energetics — Add your institutions and dates here. Brief bullets of relevant roles.','cv.downloadFR':'Download CV (FR)','cv.downloadEN':'Download CV (EN)',
-        'contact.title':'Contact','contact.send':'Send message'
-      },
-      fr:{
-        'nav.home':'Accueil','nav.projects':'Projets','nav.cv':'CV','nav.contact':'Contact',
-        'hero.title':'Bonjour — je suis <span id="author-name">'+site.name+'</span>','hero.desc':'Je travaille en CFD, modélisation de turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.',
-        'projects.title':'Projets','projects.subtitle':'Clique une carte pour voir les détails',
-        'cv.title':'CV','cv.summary':'Formation & Expérience','cv.desc':'Master en Mécanique des Fluides & Énergétique — Ajoute tes établissements et dates ici. Quelques points sur tes rôles pertinents.','cv.downloadFR':'Télécharger CV (FR)','cv.downloadEN':'Télécharger CV (EN)',
-        'contact.title':'Contact','contact.send':'Envoyer'
-      }
-    };
-
-    // render socials
-    const socialsNode = document.getElementById('socials');
-    site.socials.forEach(s => {
-      const a = document.createElement('a'); a.href = s.url; a.target='_blank'; a.rel='noopener'; a.innerText = s.name; socialsNode.appendChild(a);
-    });
-
-    // render projects
-    const grid = document.getElementById('projects-grid');
-    site.projects.forEach(p=>{
-      const card = document.createElement('div'); card.className='card'; card.dataset.id = p.id;
-      card.innerHTML = `<img src="${p.cover}" alt="${p.title}"><div class='card-body'><h3>${p.title}</h3><p>${p.short}</p></div>`;
-      card.addEventListener('click', ()=>openProject(p));
-      grid.appendChild(card);
-    });
-
-    function openProject(p){
-      const modal = document.getElementById('modal');
-      const content = document.getElementById('modal-content');
-      content.innerHTML = `<div style="display:flex;gap:18px;flex-wrap:wrap"><div style=\"flex:1;min-width:280px\"><img src=\"${p.cover}\" style=\"width:100%;height:240px;object-fit:cover;border-radius:8px\"></div><div style=\"flex:1;min-width:280px\">${p.details}</div></div>`;
-      modal.style.display='flex';
-    }
-    document.getElementById('close-modal').addEventListener('click', ()=>document.getElementById('modal').style.display='none');
-    document.getElementById('modal').addEventListener('click', (e)=>{ if(e.target.id==='modal') e.currentTarget.style.display='none'});
-
-    // Language switcher
-    const langBtn = document.getElementById('lang-toggle');
-    let lang = 'en'; // default
-    function setLang(l){
-      lang = l;
-      document.documentElement.lang = (l==='fr') ? 'fr' : 'en';
-      // update all data-i18n
-      document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const key = el.getAttribute('data-i18n');
-        if(i18n[l] && i18n[l][key]) el.innerHTML = i18n[l][key];
-      });
-      langBtn.innerText = (l==='fr') ? 'EN' : 'FR';
-    }
-    langBtn.addEventListener('click', ()=> setLang(lang==='en' ? 'fr' : 'en'));
-    setLang('en');
-
-    // Contact form submission (simple fetch to Formspree)
-    const form = document.getElementById('contact-form');
-    const result = document.getElementById('form-result');
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const data = new FormData(form);
-      result.innerText = 'Sending...';
-      try{
-        const res = await fetch(form.action, {method:'POST', body:data, headers:{'Accept':'application/json'}});
-        if(res.ok){ result.innerText = 'Message sent — thank you.'; form.reset(); }
-        else { const json = await res.json(); result.innerText = json.error || 'Error sending message.' }
-      }catch(err){ result.innerText = 'Error sending message — check endpoint.' }
-    });
-
-    // small accessibility: keyboard close
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') document.getElementById('modal').style.display='none' })
-
-    // put site name
-    document.getElementById('site-name').innerText = site.name;
-    document.getElementById('site-sub').innerText = site.subtitle;
-    document.getElementById('author-name').innerText = site.name;
-  </script>
-</body>
-</html>
-
-<!-- projects/project-template.html -->
-<!-- Duplicate this file for each project -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projet – Titre du projet</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio CFD – Thierno</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <a href="../index.html">← Retour au portfolio</a>
+
+  <!-- Header / Accueil -->
+  <header class="hero">
+    <div class="hero-content">
+      <img src="assets/img/photo.jpg" alt="Photo de Thierno" class="hero-photo">
+      <div class="hero-text">
+        <h1>Thierno – Master Fluides & Énergétique</h1>
+        <p>Étudiant en mécanique des fluides et énergétique, passionné par la CFD et l'optimisation des procédés.</p>
+        <div class="social-links">
+          <a href="https://linkedin.com/in/tonprofil" target="_blank">LinkedIn</a>
+          <a href="https://github.com/Thierno" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <main class="project-page">
-    <h1>Titre du projet</h1>
-    <img src="../assets/img/project-cover.png" alt="Image du projet" class="project-cover" />
+  <!-- Section Projets -->
+  <section id="projects">
+    <h2>Mes projets CFD</h2>
+    <div class="project-grid">
 
-    <section>
-      <h2>Résumé</h2>
-      <p>Brève présentation du projet.</p>
-    </section>
+      <a href="projects/airfoil-hllc.html" class="project-card">
+        <img src="assets/img/project_airfoil.jpg" alt="Airfoil HLLC">
+        <h3>Airfoil HLLC study</h3>
+        <p>HLLC scheme comparison for compressible flow around an aerofoil</p>
+      </a>
 
-    <section>
-      <h2>Objectifs</h2>
-      <ul>
-        <li>Objectif 1</li>
-        <li>Objectif 2</li>
-      </ul>
-    </section>
+      <a href="projects/reactor-study.html" class="project-card">
+        <img src="assets/img/project_reactor.jpg" alt="Hydrodynamic Reactor Study">
+        <h3>Hydrodynamic Reactor Study</h3>
+        <p>Simulation of fluid flow inside a chemical reactor</p>
+      </a>
 
-    <section>
-      <h2>Méthodologie</h2>
-      <p>Détails techniques : solveur, schéma numérique, maillage, HPC, bibliothèques utilisées…</p>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <h2>Résultats</h2>
-      <p>Description + possibilité d'ajouter des images, figures, GIFs Paraview.</p>
-      <img src="../assets/img/result1.png" alt="Résultat CFD" />
-    </section>
+  <!-- Onglet CV -->
+  <section id="cv">
+    <h2>Mon CV</h2>
+    <ul>
+      <li>Master 2 – Mécanique des fluides et énergétique, École Centrale Lyon</li>
+      <li>Ingénieur – Génie des procédés</li>
+      <li>Expériences : Simulation CFD, projets haute performance</li>
+    </ul>
+    <p>
+      <a href="assets/cv/cv_fr.pdf" target="_blank">Télécharger le CV (FR)</a> |
+      <a href="assets/cv/cv_en.pdf" target="_blank">Download CV (EN)</a>
+    </p>
+  </section>
 
-    <section>
-      <h2>Conclusion</h2>
-      <p>Résumé final et points importants.</p>
-    </section>
+  <!-- Formulaire de contact -->
+  <section id="contact">
+    <h2>Contactez-moi</h2>
+    <form action="https://formspree.io/f/xxxxxx" method="POST">
+      <input type="text" name="name" placeholder="Nom" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <textarea name="message" placeholder="Votre message" required></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+  </section>
 
-    <footer>
-      <a class="github-button" href="https://github.com/username/repo" target="_blank">Voir le code sur GitHub</a>
-    </footer>
-  </main>
+  <!-- Switch langue -->
+  <footer>
+    <p>Langue: <a href="#">FR</a> | <a href="#">EN</a></p>
+  </footer>
+
 </body>
 </html>
-
