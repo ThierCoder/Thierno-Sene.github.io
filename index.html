@@ -323,7 +323,7 @@ INSTRUCTIONS:
       detailBody.innerHTML = p.body;
       detailImages.innerHTML = '';
       (p.images||[]).forEach(src=>{ const im = document.createElement('img'); im.src = src; im.alt = p.title; im.style.width='100%'; im.style.borderRadius='8px'; detailImages.appendChild(im); });
-      detailActions.innerHTML = `<a class="btn" href="${p.repo}" target="_blank">Voir le code (GitHub)</a>`;
+      //detailActions.innerHTML = `<a class="btn" href="${p.repo}" target="_blank">Voir le code (GitHub)</a>`;
 
       // show pane
       document.getElementById('grid').style.display = 'none';
