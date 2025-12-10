@@ -1,19 +1,24 @@
 <!--
-FICHIER: index.html (version complète et mise à jour)
-INSTRUCTIONS :
-1) Dépose ce fichier à la racine de ton repo GitHub Pages (par ex. thiernosene.github.io/index.html).
-2) Crée les dossiers : /assets/img/ et /assets/cv/ et y place les fichiers référencés.
-3) Crée les pages projets dans /projects/ (ex: projects/airfoil-hllc.html, projects/reactor-study.html).
-4) Configure le formulaire Formspree (ou Netlify Forms) en remplaçant l'URL de action.
-5) Personnalise l'objet `site` ci-dessous (nom, réseaux, projets, chemins, textes FR/EN).
+FILE: index.html (SPA-style projects tab)
+DESCRIPTION:
+- Single-page portfolio focused on CFD projects
+- Projects opened inside the "Projects" section as a clean, full-width detail pane (no page reload)
+- URL hash routing (index.html#project-airfoil-hllc) for shareable links
+- FR/EN language toggler, accessible, responsive, minimal & professional design
+- Contact form placeholder (Formspree), CV download links, socials
 
-Description : Ce fichier fournit :
-- Header/hero (photo + présentation côte-à-côte)
-- Grille de projets (chaque carte pointe vers une page dédiée dans /projects/)
-- Onglet CV (liens FR/EN)
-- Formulaire de contact (Formspree placeholder)
-- Switch langue FR/EN (client-side)
-- Styles responsives et accessibles
+INSTRUCTIONS:
+1) Save this file as index.html at the root of your repo (e.g., thiernosene.github.io/index.html).
+2) Create folders: /assets/img/ and /assets/cv/ and upload your images and CV PDFs.
+   - assets/img/photo.jpg -> hero photo
+   - assets/img/cover_flow.jpg -> hero cover
+   - assets/img/project_airfoil.jpg, assets/img/airfoil_result.png
+   - assets/img/project_reactor.jpg, assets/img/reactor_result.png
+   - assets/cv/CV_Thierno_FR.pdf, assets/cv/CV_Thierno_EN.pdf
+3) Edit the `site` object in the script (name, socials, projects) if needed.
+4) Replace the Formspree action URL with your form endpoint.
+5) Commit & push to GitHub. Site works on GitHub Pages (client-side only).
+
 -->
 
 <!doctype html>
@@ -21,146 +26,191 @@ Description : Ce fichier fournit :
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Portfolio CFD — Thierno</title>
-  <meta name="description" content="Portfolio CFD — projets, code, visualisations, OpenFOAM, HPC">
+  <title>Portfolio CFD — Thierno Sène</title>
+  <meta name="description" content="Portfolio CFD — projets, visualisations, code, OpenFOAM, HPC">
+
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root{--bg:#071022;--card:#071425;--muted:#9aa4b2;--accent:#4f46e5;--glass:rgba(255,255,255,0.03);--radius:14px;--maxw:1100px;--gap:18px;--ff:'Inter',system-ui, -apple-system, 'Segoe UI', Roboto}
+    /* Reset & tokens */
+    :root{
+      --bg: #071227; --panel: #0b1320; --muted: #9aa4b2; --accent: #4563ff; --glass: rgba(255,255,255,0.03);
+      --radius: 12px; --maxw:1100px; --gap:18px; --ff: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:var(--ff);background:linear-gradient(180deg,#041026 0%,#071827 100%);color:#e6eef8;line-height:1.45}
+    body{margin:0;font-family:var(--ff);background:linear-gradient(180deg,#021022 0%,#071227 100%);color:#eaf0fb}
+    a{color:inherit}
     .wrap{max-width:var(--maxw);margin:28px auto;padding:22px}
 
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
     .brand{display:flex;align-items:center;gap:12px}
-    .avatar{width:60px;height:60px;border-radius:12px;overflow:hidden;background:var(--glass);display:flex;align-items:center;justify-content:center}
+    .avatar{width:64px;height:64px;border-radius:10px;overflow:hidden;background:var(--glass);display:flex;align-items:center;justify-content:center}
     .avatar img{width:100%;height:100%;object-fit:cover}
     .brand h1{font-size:18px;margin:0}
-    nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-weight:600}
-    nav a:hover{color:var(--accent)}
+    nav{display:flex;align-items:center;gap:10px}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    nav a:hover{color:var(--accent);background:rgba(69,99,255,0.06)}
+    #lang-toggle{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer}
 
-    /* HERO */
-    .hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:22px;border-radius:18px;margin-bottom:22px}
-    .hero .photo{border-radius:12px;overflow:hidden;min-height:240px;background:#0a1220;display:flex;align-items:center;justify-content:center}
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:22px;border-radius:16px}
+    .hero .photo{border-radius:12px;overflow:hidden;min-height:240px;background:#081022;display:flex;align-items:center;justify-content:center}
     .hero .photo img{width:100%;height:100%;object-fit:cover}
-    .intro{padding:6px}
-    .intro h2{margin:0 0 8px 0;font-size:26px}
-    .intro p{color:var(--muted);margin-top:6px}
-    .socials{display:flex;gap:12px;margin-top:12px}
-    .socials a{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--glass);color:var(--muted);text-decoration:none;font-weight:600}
+    .intro h2{margin:0 0 8px 0;font-size:24px}
+    .intro p{color:var(--muted);margin:0}
+    .socials{display:flex;gap:10px;margin-top:14px}
+    .socials a{background:var(--glass);padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:600}
 
-    /* PROJECTS */
-    section h2{font-size:20px;margin:0 0 12px 0}
-    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);}
-    .project-card{display:block;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:0;border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .18s}
-    .project-card:hover{transform:translateY(-6px)}
-    .project-card img{width:100%;height:160px;object-fit:cover;display:block}
-    .project-card .body{padding:12px}
-    .project-card h3{margin:0 0 6px 0;font-size:16px}
-    .project-card p{margin:0;color:var(--muted);font-size:13px}
+    /* Main layout */
+    main{margin-top:18px}
+    section{margin-bottom:22px}
 
-    /* CV */
+    /* Projects grid */
+    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .18s, box-shadow .18s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .card img{width:100%;height:180px;object-fit:cover}
+    .card .card-body{padding:12px}
+    .card h3{margin:0 0 6px 0;font-size:16px}
+    .card p{margin:0;color:var(--muted);font-size:13px}
+
+    /* Project detail pane (SPA) */
+    .detail-pane{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:12px;padding:18px;display:none}
+    .detail-pane.visible{display:block;animation:fadeIn .28s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .detail-top{display:flex;gap:16px;align-items:flex-start}
+    .detail-cover{width:44%;min-width:260px;border-radius:10px;overflow:hidden}
+    .detail-cover img{width:100%;height:100%;object-fit:cover}
+    .detail-meta{flex:1}
+    .meta-list{color:var(--muted);font-size:14px;margin-top:8px}
+    .meta-list li{margin-bottom:6px}
+    .detail-body{margin-top:12px;color:var(--muted);line-height:1.5}
+    .detail-images{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:white;text-decoration:none;font-weight:700}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    /* CV block */
     .cv-block{display:flex;gap:18px;align-items:flex-start;background:var(--glass);padding:14px;border-radius:12px}
-    .cv-block a{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;text-decoration:none}
 
-    /* CONTACT */
-    .contact{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px}
+    /* Contact */
     .contact form{display:grid;gap:8px}
-    input,textarea,button,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-    button{background:var(--accent);border:none;color:white;font-weight:700}
+    input,textarea,button{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
 
-    footer{margin-top:26px;color:var(--muted);font-size:13px;text-align:center}
+    /* Footer */
+    footer{margin-top:30px;color:var(--muted);font-size:13px;text-align:center}
 
-    @media (max-width:900px){.hero{grid-template-columns:1fr}.project-grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:520px){.project-grid{grid-template-columns:1fr}.brand h1{display:none}}
+    /* Responsive */
+    @media (max-width:980px){.project-grid{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}}
+    @media (max-width:560px){.project-grid{grid-template-columns:1fr}.detail-top{flex-direction:column}.detail-cover{width:100%}.hero{padding:12px}.brand h1{display:none}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="avatar"><img id="avatar-img" src="assets/img/photo.jpg" alt="Photo"></div>
+        <div class="avatar"><img id="avatar" src="assets/img/photo.jpg" alt="Photo"></div>
         <div>
           <h1 id="site-name">Thierno Sène</h1>
-          <div id="site-sub" style="color:var(--muted);font-size:13px">CFD • HPC • OpenFOAM</div>
+          <div id="site-sub" style="color:var(--muted);font-size:13px">CFD • HPC • OpenFOAM — École Centrale de Lyon</div>
         </div>
       </div>
-
       <nav>
-        <a href="#home" data-i18n="nav.home">Accueil</a>
-        <a href="#projects" data-i18n="nav.projects">Projets</a>
-        <a href="#cv" data-i18n="nav.cv">CV</a>
-        <a href="#contact" data-i18n="nav.contact">Contact</a>
-        <button id="lang-toggle" style="margin-left:12px;padding:8px 10px;border-radius:8px;background:var(--glass);border:none;color:var(--muted);font-weight:700">EN</button>
+        <a href="#home" data-link>Accueil</a>
+        <a href="#projects" data-link>Projets</a>
+        <a href="#cv" data-link>CV</a>
+        <a href="#contact" data-link>Contact</a>
+        <button id="lang-toggle" aria-label="Changer la langue">EN</button>
       </nav>
     </header>
 
-    <main id="home">
-      <section class="hero">
+    <main>
+      <!-- HERO -->
+      <section class="hero" id="home">
         <div class="photo"><img src="assets/img/cover_flow.jpg" alt="Flow visualization"></div>
         <div class="intro">
-          <h2 data-i18n="hero.title">Bonjour — je suis <span id="author-name">Thierno Sène</span></h2>
-          <p data-i18n="hero.desc">Je travaille en CFD, modélisation de la turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.</p>
+          <h2 id="hero-title">Bonjour — je suis <span id="author">Thierno Sène</span></h2>
+          <p id="hero-desc">Je travaille en CFD, modélisation de la turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.</p>
           <div class="socials" id="socials"></div>
         </div>
       </section>
 
-      <!-- Projects grid (generated from JS) -->
-      <section id="projects" style="margin-top:20px">
+      <!-- PROJECTS (grid + SPA detail pane) -->
+      <section id="projects" aria-labelledby="projects-heading">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <h2 data-i18n="projects.title">Projets</h2>
-          <div style="color:var(--muted);font-size:13px" data-i18n="projects.subtitle">Clique une carte pour ouvrir la page du projet</div>
+          <h2 id="projects-heading">Projets</h2>
+          <div style="color:var(--muted);font-size:13px">Clique une carte pour ouvrir le projet (vue intégrée)</div>
         </div>
-        <div class="project-grid" id="projects-grid">
-          <!-- Project cards injected by JS -->
-        </div>
+
+        <!-- Grid -->
+        <div id="grid" class="project-grid"></div>
+
+        <!-- Detail pane (hidden until a project is opened) -->
+        <article id="detail" class="detail-pane" aria-hidden="true">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;gap:12px;align-items:center">
+              <button id="back-to-grid" class="btn-ghost">← Retour à la grille</button>
+              <h3 id="detail-title" style="margin:0"></h3>
+            </div>
+            <div id="detail-actions"></div>
+          </div>
+
+          <div class="detail-top">
+            <div class="detail-cover"><img id="detail-cover-img" src="" alt="Cover"></div>
+            <div class="detail-meta">
+              <p id="detail-summary" style="margin:0;color:var(--muted)"></p>
+              <ul class="meta-list" id="detail-meta-list"></ul>
+            </div>
+          </div>
+
+          <div class="detail-body" id="detail-body"></div>
+          <div class="detail-images" id="detail-images"></div>
+        </article>
+
       </section>
 
       <!-- CV -->
-      <section id="cv" style="margin-top:22px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <h2 data-i18n="cv.title">CV</h2>
-        </div>
+      <section id="cv">
+        <h2>CV</h2>
         <div class="cv-block">
           <div style="flex:1">
-            <strong data-i18n="cv.summary">Formation & Expérience</strong>
-            <p style="color:var(--muted);margin-top:8px" data-i18n="cv.desc">Master en Mécanique des Fluides & Énergétique — Ajoute tes établissements et dates ici. Quelques points sur tes rôles pertinents.</p>
+            <strong>Formation & Expérience</strong>
+            <p style="color:var(--muted);margin-top:8px">Master M2 Mécanique des fluides & énergétique — École Centrale de Lyon. Ingénieur en génie des procédés. Expériences en simulation CFD, HPC et optimisation.</p>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-            <a id="download-fr" href="assets/cv/CV_Thierno_FR.pdf" download data-i18n="cv.downloadFR">Télécharger CV (FR)</a>
-            <a id="download-en" href="assets/cv/CV_Thierno_EN.pdf" download data-i18n="cv.downloadEN">Download CV (EN)</a>
+            <a class="btn" href="assets/cv/CV_Thierno_FR.pdf" target="_blank">Télécharger CV (FR)</a>
+            <a class="btn btn-ghost" href="assets/cv/CV_Thierno_EN.pdf" target="_blank">Download CV (EN)</a>
           </div>
         </div>
       </section>
 
-      <!-- Contact -->
-      <section id="contact" style="margin-top:22px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <h2 data-i18n="contact.title">Contact</h2>
-        </div>
+      <!-- CONTACT -->
+      <section id="contact">
+        <h2>Contact</h2>
         <div class="contact">
           <form id="contact-form" action="https://formspree.io/f/your_form_id" method="POST">
             <input type="text" name="name" placeholder="Nom" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="subject" placeholder="Sujet">
             <textarea name="message" placeholder="Message" rows="6" required></textarea>
-            <button type="submit" data-i18n="contact.send">Envoyer</button>
+            <button type="submit" class="btn">Envoyer</button>
             <div id="form-result" style="color:var(--muted);font-size:13px;margin-top:8px"></div>
           </form>
-          <div style="color:var(--muted);font-size:13px;margin-top:12px">Note: GitHub Pages ne gère pas le code côté serveur. Utilise Formspree, Netlify Forms ou EmailJS.</div>
+          <div style="color:var(--muted);font-size:13px;margin-top:12px">Note: GitHub Pages ne gère pas le code serveur. Utilise Formspree, Netlify Forms ou EmailJS.</div>
         </div>
       </section>
 
     </main>
 
     <footer>
-      <div>Built with ❤️ — École Centrale de Lyon</div>
+      <div style="text-align:center;color:var(--muted);font-size:13px">Built with ♥ — École Centrale de Lyon</div>
     </footer>
   </div>
 
   <script>
-    // Site metadata (modifie ici tes infos)
+    // ---------- SITE DATA ----------
     const site = {
       name: 'Thierno Sène',
       subtitle: 'CFD • HPC • OpenFOAM',
@@ -170,68 +220,176 @@ Description : Ce fichier fournit :
         {name:'YouTube', url:'https://youtube.com/taChaine'}
       ],
       projects: [
-        { id:'airfoil-hllc', title:'Airfoil HLLC study', cover:'assets/img/project_airfoil.jpg', short:'HLLC scheme comparison for compressible flow around an aerofoil', page:'Assets/projects/reacteurChimique.html' },
-        { id:'reactor-study', title:'Hydrodynamic Reactor Study', cover:'assets/img/project_reactor.jpg', short:'Simulation of fluid flow inside a chemical reactor', page:'Assets/projects/reacteurChimique.html' }
+        {
+          id: 'airfoil-hllc',
+          title: 'Airfoil HLLC study',
+          cover: 'assets/img/project_airfoil.jpg',
+          summary: 'HLLC scheme comparison for compressible flow around an aerofoil',
+          meta: {
+            software: 'OpenFOAM 12',
+            scheme: 'HLLC (2nd order)',
+            mesh: 'SnappyHexMesh, local refinement',
+            bc: 'Inlet velocity, outlet pressure, wall (no-slip)'
+          },
+          body: `
+            <h4>Contexte</h4>
+            <p>Étude numérique d'un profil NACA en régime compressible. Objectifs : localiser le choc, calculer Cp et comparer les schémas numériques.</p>
+            <h4>Détails numériques</h4>
+            <ul>
+              <li>Équations résolues : Euler / compressible</li>
+              <li>Temps de calcul : bench sur 16 processus MPI</li>
+              <li>Critères de convergence : résidu réduits de 1e-6</li>
+            </ul>
+            <h4>Résultats</h4>
+            <p>Profil de pression, distribution de Cp et position du choc. Comparaison entre maillages fins et grossiers.</p>
+          `,
+          images: ['assets/img/airfoil_result.png'],
+          repo: 'https://github.com/Thierno/airfoil-HLLC'
+        },
+        {
+          id: 'reactor-study',
+          title: 'Hydrodynamic Reactor Study',
+          cover: 'assets/img/project_reactor.jpg',
+          summary: 'Simulation of fluid flow inside a chemical reactor',
+          meta: {
+            software: 'OpenFOAM 12',
+            scheme: 'Incompressible solver + turbulence model (k-omega SST)',
+            mesh: 'Hybrid hexa/hex-refinement',
+            bc: 'Inlet velocity profile, walls, outlet pressure'
+          },
+          body: `
+            <h4>Contexte</h4>
+            <p>Modélisation de l'hydrodynamique interne d'un réacteur agité pour évaluer l'homogénéité et pertes de charge.</p>
+            <h4>Détails numériques</h4>
+            <ul>
+              <li>Multi-phase support (volume fraction method)</li>
+              <li>Post-traitement : champs de vitesse, PIV-like extraction</li>
+            </ul>
+            <h4>Résultats</h4>
+            <p>Cartographie des zones de recirculation, calcul de l'efficacité de mélange et pertes de charge.</p>
+          `,
+          images: ['assets/img/reactor_result.png'],
+          repo: 'https://github.com/Thierno/reactor-study'
+        }
       ]
     };
 
-    // i18n text
-    const i18n = {
-      fr: {
-        'nav.home':'Accueil','nav.projects':'Projets','nav.cv':'CV','nav.contact':'Contact',
-        'hero.title':'Bonjour — je suis <span id="author-name">'+site.name+'</span>','hero.desc':'Je travaille en CFD, modélisation de la turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.',
-        'projects.title':'Projets','projects.subtitle':'Clique une carte pour ouvrir la page du projet',
-        'cv.title':'CV','cv.summary':'Formation & Expérience','cv.desc':'Master en Mécanique des Fluides & Énergétique — Ajoute tes établissements et dates ici. Quelques points sur tes rôles pertinents.','cv.downloadFR':'Télécharger CV (FR)','cv.downloadEN':'Télécharger CV (EN)',
-        'contact.title':'Contact','contact.send':'Envoyer'
-      },
-      en: {
-        'nav.home':'Home','nav.projects':'Projects','nav.cv':'CV','nav.contact':'Contact',
-        'hero.title':'Hello — I\'m <span id="author-name">'+site.name+'</span>','hero.desc':'I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.',
-        'projects.title':'Projects','projects.subtitle':'Click a card to open the project page',
-        'cv.title':'CV','cv.summary':'Education & Experience','cv.desc':'Master in Fluid Mechanics & Energetics — Add your institutions and dates here. Brief bullets of relevant roles.','cv.downloadFR':'Download CV (FR)','cv.downloadEN':'Download CV (EN)',
-        'contact.title':'Contact','contact.send':'Send message'
-      }
-    };
+    // ---------- RENDER BASICS ----------
+    document.getElementById('site-name').innerText = site.name;
+    document.getElementById('author').innerText = site.name;
+    document.getElementById('site-sub').innerText = site.subtitle;
 
-    // Render socials
+    // socials
     const socialsNode = document.getElementById('socials');
     site.socials.forEach(s => {
       const a = document.createElement('a'); a.href = s.url; a.target='_blank'; a.rel='noopener'; a.innerText = s.name; socialsNode.appendChild(a);
     });
 
-    // Render project cards linking to project pages
-    const grid = document.getElementById('projects-grid');
-    site.projects.forEach(p => {
-      const a = document.createElement('a'); a.className='project-card'; a.href = p.page;
-      a.innerHTML = `<img src="${p.cover}" alt="${p.title}"><div class='body'><h3>${p.title}</h3><p>${p.short}</p></div>`;
-      grid.appendChild(a);
+    // projects grid
+    const grid = document.getElementById('grid');
+    function renderGrid(){
+      grid.innerHTML = '';
+      site.projects.forEach(p => {
+        const el = document.createElement('a'); el.className = 'card'; el.href = `#${p.id}`;
+        el.innerHTML = `<img src="${p.cover}" alt="${p.title}"><div class="card-body"><h3>${p.title}</h3><p>${p.summary}</p></div>`;
+        grid.appendChild(el);
+      });
+    }
+    renderGrid();
+
+    // detail pane elements
+    const detail = document.getElementById('detail');
+    const detailTitle = document.getElementById('detail-title');
+    const detailCoverImg = document.getElementById('detail-cover-img');
+    const detailSummary = document.getElementById('detail-summary');
+    const detailMetaList = document.getElementById('detail-meta-list');
+    const detailBody = document.getElementById('detail-body');
+    const detailImages = document.getElementById('detail-images');
+    const detailActions = document.getElementById('detail-actions');
+    const backBtn = document.getElementById('back-to-grid');
+
+    function openProjectById(id, pushState=true){
+      const p = site.projects.find(x=>x.id===id);
+      if(!p) return showGridOnly();
+      // fill
+      detailTitle.innerText = p.title;
+      detailCoverImg.src = p.cover;
+      detailCoverImg.alt = p.title;
+      detailSummary.innerText = p.summary;
+      detailMetaList.innerHTML = '';
+      for(const k in p.meta){
+        const li = document.createElement('li'); li.innerText = `${k.charAt(0).toUpperCase()+k.slice(1)}: ${p.meta[k]}`; detailMetaList.appendChild(li);
+      }
+      detailBody.innerHTML = p.body;
+      detailImages.innerHTML = '';
+      (p.images||[]).forEach(src=>{ const im = document.createElement('img'); im.src = src; im.alt = p.title; im.style.width='100%'; im.style.borderRadius='8px'; detailImages.appendChild(im); });
+      detailActions.innerHTML = `<a class="btn" href="${p.repo}" target="_blank">Voir le code (GitHub)</a>`;
+
+      // show pane
+      document.getElementById('grid').style.display = 'none';
+      detail.classList.add('visible'); detail.setAttribute('aria-hidden','false');
+
+      // scroll into view
+      detail.scrollIntoView({behavior:'smooth',block:'start'});
+
+      // update hash
+      if(pushState) location.hash = p.id;
+    }
+
+    function showGridOnly(){
+      detail.classList.remove('visible'); detail.setAttribute('aria-hidden','true');
+      document.getElementById('grid').style.display = '';
+      // remove hash
+      if(location.hash) history.replaceState('', document.title, location.pathname + location.search);
+    }
+
+    // back button
+    backBtn.addEventListener('click', ()=>{
+      showGridOnly();
     });
 
-    // Language switcher
-    const langBtn = document.getElementById('lang-toggle');
+    // hashchange handling (deep linking)
+    function handleHash(){
+      const id = location.hash.replace('#','');
+      if(!id) { showGridOnly(); return; }
+      openProjectById(id,false);
+    }
+    window.addEventListener('hashchange', handleHash);
+    // initial check
+    handleHash();
+
+    // nav links scroll
+    document.querySelectorAll('[data-link]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault(); const href = a.getAttribute('href'); document.querySelector(href).scrollIntoView({behavior:'smooth'});
+      });
+    });
+
+    // language toggle (simple)
+    const langToggle = document.getElementById('lang-toggle');
     let lang = 'fr';
     function setLang(l){
       lang = l;
-      document.documentElement.lang = (l==='en') ? 'en' : 'fr';
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if(i18n[l] && i18n[l][key]) el.innerHTML = i18n[l][key];
-      });
-      // update toggle label
-      langBtn.innerText = (l==='en') ? 'FR' : 'EN';
+      if(l==='en'){
+        document.documentElement.lang = 'en'; document.getElementById('hero-title').innerHTML = `Hello — I'm <span id="author">${site.name}</span>`;
+        document.getElementById('hero-desc').innerText = 'I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.';
+        langToggle.innerText = 'FR';
+      }else{
+        document.documentElement.lang = 'fr'; document.getElementById('hero-title').innerHTML = `Bonjour — je suis <span id="author">${site.name}</span>`;
+        document.getElementById('hero-desc').innerText = 'Je travaille en CFD, modélisation de la turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.';
+        langToggle.innerText = 'EN';
+      }
     }
-    langBtn.addEventListener('click', ()=> setLang(lang==='fr' ? 'en' : 'fr'));
+    langToggle.addEventListener('click', ()=> setLang(lang==='fr'?'en':'fr'));
     setLang('fr');
 
-    // Contact form (fetch to Formspree)
+    // contact form simple handling
     const form = document.getElementById('contact-form');
     const result = document.getElementById('form-result');
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const data = new FormData(form);
-      result.innerText = 'Envoi...';
+    form.addEventListener('submit', async e=>{
+      e.preventDefault(); result.innerText = 'Envoi...';
       try{
-        const res = await fetch(form.action, {method:'POST', body:data, headers:{'Accept':'application/json'}});
+        const res = await fetch(form.action, {method:'POST', body:new FormData(form), headers:{'Accept':'application/json'}});
         if(res.ok){ result.innerText = 'Message envoyé — merci.'; form.reset(); }
         else { const json = await res.json(); result.innerText = json.error || 'Erreur lors de l\'envoi.' }
       }catch(err){ result.innerText = 'Erreur lors de l\'envoi — vérifie le endpoint.' }
