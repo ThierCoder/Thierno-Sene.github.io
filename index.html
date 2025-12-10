@@ -34,19 +34,17 @@ INSTRUCTIONS:
 
   <style>
     /* Reset & tokens */
-   :root{
-     --bg: #faf6f5;          /* fond principal blanc rosé très pâle */
-     --panel: #0b1320;       /* bleu sombre (sections / panneaux) */
-     --muted: #9aa4b2;       /* texte secondaire gris-bleu */
-     --accent: #5c82ff;      /* bleu clair pour boutons / liens / accents */
-     --glass: rgba(0,0,0,0.04); /* verre très léger, adapté au fond clair */
-     
-     --radius: 12px;
-     --maxw:1100px;
-     --gap:18px;
-     --ff: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
-   }
-
+    :root{
+      --bg: #faf6f5;          /* fond principal blanc rosé très pâle */
+      --panel: #0b1320;       /* bleu sombre (sections / panneaux) */
+      --muted: #9aa4b2;       /* texte secondaire gris-bleu */
+      --accent: #5c82ff;      /* bleu clair pour boutons / liens / accents */
+      --glass: rgba(0,0,0,0.04); /* verre très léger, adapté au fond clair */
+      --radius: 12px; 
+      --maxw:1100px; 
+      --gap:18px; 
+      --ff: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;font-family:var(--ff);background:linear-gradient(180deg,#021022 0%,#071227 100%);color:#eaf0fb}
@@ -332,7 +330,7 @@ INSTRUCTIONS:
       detailBody.innerHTML = p.body;
       detailImages.innerHTML = '';
       (p.images||[]).forEach(src=>{ const im = document.createElement('img'); im.src = src; im.alt = p.title; im.style.width='100%'; im.style.borderRadius='8px'; detailImages.appendChild(im); });
-      //detailActions.innerHTML = `<a class="btn" href="${p.repo}" target="_blank">Voir le code (GitHub)</a>`;
+      detailActions.innerHTML = '';
 
       // show pane
       document.getElementById('grid').style.display = 'none';
