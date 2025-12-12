@@ -1,57 +1,92 @@
-<!-- Adapted portfolio template based on "portfolio_one-page-template" (built/static version)
-Instructions:
-1) Save this file as index.html at the root of your repository.
-2) Create folders: /assets/img/ and /assets/cv/ and upload your images and CVs.
-3) Create /projects/ and add project pages or rely on SPA detail behavior.
-4) Replace Formspree action with your endpoint.
+<!--
+FILE: index.html (SPA-style projects tab)
+DESCRIPTION:
+- Single-page portfolio focused on CFD projects
+- Projects opened inside the "Projects" section as a clean, full-width detail pane (no page reload)
+- URL hash routing (index.html#project-airfoil-hllc) for shareable links
+- FR/EN language toggler, accessible, responsive, minimal & professional design
+- Contact form placeholder (Formspree), CV download links, socials
 
-This version is adapted to your CFD portfolio: minimal, professional, one-page with project grid and project pages compatibility.
+INSTRUCTIONS:
+1) Save this file as index.html at the root of your repo (e.g., thiernosene.github.io/index.html).
+2) Create folders: /assets/img/ and /assets/cv/ and upload your images and CV PDFs.
+   - assets/img/photo.jpg -> hero photo
+   - assets/img/cover_flow.jpg -> hero cover
+   - assets/img/project_airfoil.jpg, assets/img/airfoil_result.png
+   - assets/img/project_reactor.jpg, assets/img/reactor_result.png
+   - assets/cv/CV_Thierno_FR.pdf, assets/cv/CV_Thierno_EN.pdf
+3) Edit the `site` object in the script (name, socials, projects) if needed.
+4) Replace the Formspree action URL with your form endpoint.
+5) Commit & push to GitHub. Site works on GitHub Pages (client-side only).
+
 -->
 
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Portfolio CFD — Thierno Sène</title>
   <meta name="description" content="Portfolio CFD — projets, visualisations, code, OpenFOAM, HPC">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg: #faf6f5;
-      --panel: #0b1320;
-      --text: #0b1320;
-      --panel-text: #faf6f5;
-      --muted: #6b7280;
-      --accent: #5c82ff;
-      --glass: rgba(11,19,32,0.06);
-      --radius:12px;--maxw:1100px;--gap:18px;--ff:'Inter',system-ui,-apple-system,'Segoe UI',Roboto
+      --bg: #faf6f5;          /* fond principal clair */
+      --panel: #0b1320;       /* panneaux / cartes bleu foncé */
+      --text: #0b1320;        /* texte sur fond clair */
+      --panel-text: #faf6f5;  /* texte sur panneaux sombres */
+      --muted: #6b7280;       /* texte secondaire (sur fond clair) */
+      --accent: #5c82ff;      /* bouton bleu clair */
+      --glass: rgba(11,19,32,0.06); /* léger verre sombre pour éléments sur fond clair */
+      --radius: 12px;
+      --maxw:1100px;
+      --gap:18px;
+      --ff: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
     }
+
     *{box-sizing:border-box}
-    html,body{height:100%}body{margin:0;font-family:var(--ff);background:var(--bg);color:var(--text)}a{color:inherit}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--ff);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    a{color:inherit}
     .wrap{max-width:var(--maxw);margin:28px auto;padding:22px}
+
+    /* Header */
     header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
     .brand{display:flex;align-items:center;gap:12px}
-    .avatar{width:64px;height:64px;border-radius:10px;overflow:hidden}
+    .avatar{width:64px;height:64px;border-radius:10px;overflow:hidden;background:transparent;display:flex;align-items:center;justify-content:center}
     .avatar img{width:100%;height:100%;object-fit:cover}
+    .brand h1{font-size:18px;margin:0;color:var(--text)}
     nav{display:flex;align-items:center;gap:10px}
     nav a{color:var(--text);text-decoration:none;padding:8px 10px;border-radius:8px}
-    #lang-toggle{background:transparent;border:1px solid rgba(11,19,32,0.06);color:var(--text);padding:8px 10px;border-radius:8px}
+    nav a:hover{color:var(--panel-text);background:var(--glass)}
+    #lang-toggle{background:transparent;border:1px solid rgba(11,19,32,0.06);color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer}
+
+    /* Hero */
     .hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;background:var(--panel);color:var(--panel-text);padding:22px;border-radius:16px}
-    .hero .photo{border-radius:12px;overflow:hidden;min-height:240px}
+    .hero .photo{border-radius:12px;overflow:hidden;min-height:240px;background:#081022;display:flex;align-items:center;justify-content:center}
     .hero .photo img{width:100%;height:100%;object-fit:cover}
     .intro h2{margin:0 0 8px 0;font-size:24px;color:var(--panel-text)}
-    .intro p{color:rgba(250,246,245,0.85)}
+    .intro p{color:rgba(250,246,245,0.85);margin:0}
     .socials{display:flex;gap:10px;margin-top:14px}
     .socials a{background:transparent;padding:8px 12px;border-radius:10px;color:var(--panel-text);text-decoration:none;font-weight:600;border:1px solid rgba(250,246,245,0.06)}
+
+    /* Main layout */
     main{margin-top:18px}
+    section{margin-bottom:22px}
+
+    /* Projects grid */
     .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-    .card{background:var(--panel);border-radius:12px;overflow:hidden;text-decoration:none;color:var(--panel-text);display:flex;flex-direction:column;transition:transform .18s;border:1px solid rgba(250,246,245,0.03)}
-    .card:hover{transform:translateY(-6px)}
+    .card{background:var(--panel);border-radius:12px;overflow:hidden;text-decoration:none;color:var(--panel-text);display:flex;flex-direction:column;transition:transform .18s, box-shadow .18s;border:1px solid rgba(250,246,245,0.03)}
+    .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.06)}
     .card img{width:100%;height:180px;object-fit:cover}
     .card .card-body{padding:12px}
     .card h3{margin:0 0 6px 0;font-size:16px;color:var(--panel-text)}
     .card p{margin:0;color:rgba(250,246,245,0.75);font-size:13px}
+
+    /* Project detail pane (SPA) */
     .detail-pane{background:var(--panel);border-radius:12px;padding:18px;display:none;color:var(--panel-text);border:1px solid rgba(250,246,245,0.03)}
     .detail-pane.visible{display:block;animation:fadeIn .28s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -60,24 +95,36 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
     .detail-cover img{width:100%;height:100%;object-fit:cover}
     .detail-meta{flex:1}
     .meta-list{color:rgba(250,246,245,0.85);font-size:14px;margin-top:8px}
+    .meta-list li{margin-bottom:6px}
     .detail-body{margin-top:12px;color:rgba(250,246,245,0.9);line-height:1.5}
     .detail-images{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
     .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:white;text-decoration:none;font-weight:700}
     .btn-ghost{display:inline-block;padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(250,246,245,0.06);color:var(--panel-text)}
+
+    /* CV block */
     .cv-block{display:flex;gap:18px;align-items:flex-start;background:transparent;padding:14px;border-radius:12px}
-    .contact form{display:grid;gap:8px}input,textarea,button{padding:10px;border-radius:8px;border:1px solid rgba(11,19,32,0.06);background:transparent;color:var(--text)}button{background:var(--accent);border:none;color:white}
+
+    /* Contact */
+    .contact form{display:grid;gap:8px}
+    input,textarea,button{padding:10px;border-radius:8px;border:1px solid rgba(11,19,32,0.06);background:transparent;color:var(--text)}
+    button{background:var(--accent);border:none;color:white}
+
+    /* Footer */
     footer{margin-top:30px;color:var(--muted);font-size:13px;text-align:center}
-    @media (max-width:980px){.project-grid{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}}@media (max-width:560px){.project-grid{grid-template-columns:1fr}.detail-top{flex-direction:column}.detail-cover{width:100%}.hero{padding:12px}.brand h1{display:none}}
+
+    /* Responsive */
+    @media (max-width:980px){.project-grid{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}}
+    @media (max-width:560px){.project-grid{grid-template-columns:1fr}.detail-top{flex-direction:column}.detail-cover{width:100%}.hero{padding:12px}.brand h1{display:none}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="avatar"><img src="assets/img/photo.jpg" alt="Photo"></div>
+        <div class="avatar"><img id="avatar" src="assets/img/photo.jpg" alt="Photo"></div>
         <div>
-          <h1>Thierno Sène</h1>
-          <div style="color:var(--muted);font-size:13px">CFD • HPC • OpenFOAM — École Centrale de Lyon</div>
+          <h1 id="site-name">Thierno Sène</h1>
+          <div id="site-sub" style="color:var(--muted);font-size:13px">CFD • HPC • OpenFOAM — École Centrale de Lyon</div>
         </div>
       </div>
       <nav>
@@ -90,6 +137,7 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
     </header>
 
     <main>
+      <!-- HERO -->
       <section class="hero" id="home">
         <div class="photo"><img src="assets/img/cover_flow.jpg" alt="Flow visualization"></div>
         <div class="intro">
@@ -99,14 +147,17 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
         </div>
       </section>
 
+      <!-- PROJECTS (grid + SPA detail pane) -->
       <section id="projects" aria-labelledby="projects-heading">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
           <h2 id="projects-heading">Projets</h2>
           <div style="color:var(--muted);font-size:13px">Clique une carte pour ouvrir le projet (vue intégrée)</div>
         </div>
 
+        <!-- Grid -->
         <div id="grid" class="project-grid"></div>
 
+        <!-- Detail pane (hidden until a project is opened) -->
         <article id="detail" class="detail-pane" aria-hidden="true">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="display:flex;gap:12px;align-items:center">
@@ -119,7 +170,7 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
           <div class="detail-top">
             <div class="detail-cover"><img id="detail-cover-img" src="" alt="Cover"></div>
             <div class="detail-meta">
-              <p id="detail-summary" style="margin:0;color:var(--panel-text)"></p>
+              <p id="detail-summary" style="margin:0;color:var(--muted)"></p>
               <ul class="meta-list" id="detail-meta-list"></ul>
             </div>
           </div>
@@ -130,6 +181,7 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
 
       </section>
 
+      <!-- CV -->
       <section id="cv">
         <h2>CV</h2>
         <div class="cv-block">
@@ -144,6 +196,7 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
         </div>
       </section>
 
+      <!-- CONTACT -->
       <section id="contact">
         <h2>Contact</h2>
         <div class="contact">
@@ -167,6 +220,7 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
   </div>
 
   <script>
+    // ---------- SITE DATA ----------
     const site = {
       name: 'Thierno Sène',
       subtitle: 'CFD • HPC • OpenFOAM',
@@ -181,43 +235,176 @@ This version is adapted to your CFD portfolio: minimal, professional, one-page w
           title: 'Airfoil HLLC study',
           cover: 'assets/img/project_airfoil.jpg',
           summary: 'HLLC scheme comparison for compressible flow around an aerofoil',
-          meta: {software:'OpenFOAM 12', scheme:'HLLC (2nd order)', mesh:'SnappyHexMesh, local refinement', bc:'Inlet velocity, outlet pressure, wall (no-slip)'},
-          body:`<h4>Contexte</h4><p>Étude numérique d'un profil NACA en régime compressible. Objectifs : localiser le choc, calculer Cp et comparer les schémas numériques.</p><h4>Détails numériques</h4><ul><li>Équations résolues : Euler / compressible</li><li>Temps de calcul : bench sur 16 processus MPI</li><li>Critères de convergence : résidu réduits de 1e-6</li></ul><h4>Résultats</h4><p>Profil de pression, distribution de Cp et position du choc. Comparaison entre maillages fins et grossiers.</p>`,
-          images:['assets/img/airfoil_result.png'],
-          repo:''
+          meta: {
+            software: 'OpenFOAM 12',
+            scheme: 'HLLC (2nd order)',
+            mesh: 'SnappyHexMesh, local refinement',
+            bc: 'Inlet velocity, outlet pressure, wall (no-slip)'
+          },
+          body: `
+            <h4>Contexte</h4>
+            <p>Étude numérique d'un profil NACA en régime compressible. Objectifs : localiser le choc, calculer Cp et comparer les schémas numériques.</p>
+            <h4>Détails numériques</h4>
+            <ul>
+              <li>Équations résolues : Euler / compressible</li>
+              <li>Temps de calcul : bench sur 16 processus MPI</li>
+              <li>Critères de convergence : résidu réduits de 1e-6</li>
+            </ul>
+            <h4>Résultats</h4>
+            <p>Profil de pression, distribution de Cp et position du choc. Comparaison entre maillages fins et grossiers.</p>
+          `,
+          images: ['assets/img/airfoil_result.png'],
+          repo: 'https://github.com/Thierno/airfoil-HLLC'
         },
         {
           id: 'reactor-study',
           title: 'Hydrodynamic Reactor Study',
           cover: 'assets/img/project_reactor.jpg',
           summary: 'Simulation of fluid flow inside a chemical reactor',
-          meta: {software:'OpenFOAM 12', scheme:"Incompressible solver + k-omega SST", mesh:'Hybrid hexa/hex-refinement', bc:'Inlet velocity profile, walls, outlet pressure'},
-          body:`<h4>Contexte</h4><p>Modélisation de l'hydrodynamique interne d'un réacteur agité pour évaluer l'homogénéité et pertes de charge.</p><h4>Détails numériques</h4><ul><li>Multi-phase support (volume fraction method)</li><li>Post-traitement : champs de vitesse, PIV-like extraction</li></ul><h4>Résultats</h4><p>Cartographie des zones de recirculation, calcul de l'efficacité de mélange et pertes de charge.</p>`,
-          images:['assets/img/reactor_result.png'],
-          repo:''
+          meta: {
+            software: 'OpenFOAM 12',
+            scheme: 'Incompressible solver + turbulence model (k-omega SST)',
+            mesh: 'Hybrid hexa/hex-refinement',
+            bc: 'Inlet velocity profile, walls, outlet pressure'
+          },
+          body: `
+            <h4>Contexte</h4>
+            <p>Modélisation de l'hydrodynamique interne d'un réacteur agité pour évaluer l'homogénéité et pertes de charge.</p>
+            <h4>Détails numériques</h4>
+            <ul>
+              <li>Multi-phase support (volume fraction method)</li>
+              <li>Post-traitement : champs de vitesse, PIV-like extraction</li>
+            </ul>
+            <h4>Résultats</h4>
+            <p>Cartographie des zones de recirculation, calcul de l'efficacité de mélange et pertes de charge.</p>
+          `,
+          images: ['assets/img/reactor_result.png'],
+          repo: 'https://github.com/Thierno/reactor-study'
         }
       ]
     };
 
-    // render basics
+    // ---------- RENDER BASICS ----------
     document.getElementById('site-name').innerText = site.name;
     document.getElementById('author').innerText = site.name;
-    const socialsNode = document.getElementById('socials');
-    site.socials.forEach(s=>{const a=document.createElement('a');a.href=s.url;a.target='_blank';a.rel='noopener';a.innerText=s.name;socialsNode.appendChild(a)});
+    document.getElementById('site-sub').innerText = site.subtitle;
 
+    // socials
+    const socialsNode = document.getElementById('socials');
+    site.socials.forEach(s => {
+      const a = document.createElement('a'); a.href = s.url; a.target='_blank'; a.rel='noopener'; a.innerText = s.name; socialsNode.appendChild(a);
+    });
+
+    // projects grid
     const grid = document.getElementById('grid');
-    function renderGrid(){grid.innerHTML='';site.projects.forEach(p=>{const el=document.createElement('a');el.className='card';el.href=`#${p.id}`;el.innerHTML=`<img src="${p.cover}" alt="${p.title}"><div class="card-body"><h3>${p.title}</h3><p>${p.summary}</p></div>`;grid.appendChild(el)})}
+    function renderGrid(){
+      grid.innerHTML = '';
+      site.projects.forEach(p => {
+        const el = document.createElement('a'); el.className = 'card'; el.href = `#${p.id}`;
+        el.innerHTML = `<img src="${p.cover}" alt="${p.title}"><div class="card-body"><h3>${p.title}</h3><p>${p.summary}</p></div>`;
+        grid.appendChild(el);
+      });
+    }
     renderGrid();
 
-    const detail=document.getElementById('detail');const detailTitle=document.getElementById('detail-title');const detailCoverImg=document.getElementById('detail-cover-img');const detailSummary=document.getElementById('detail-summary');const detailMetaList=document.getElementById('detail-meta-list');const detailBody=document.getElementById('detail-body');const detailImages=document.getElementById('detail-images');const backBtn=document.getElementById('back-to-grid');const detailActions=document.getElementById('detail-actions');
+    // detail pane elements
+    const detail = document.getElementById('detail');
+    const detailTitle = document.getElementById('detail-title');
+    const detailCoverImg = document.getElementById('detail-cover-img');
+    const detailSummary = document.getElementById('detail-summary');
+    const detailMetaList = document.getElementById('detail-meta-list');
+    const detailBody = document.getElementById('detail-body');
+    const detailImages = document.getElementById('detail-images');
+    const detailActions = document.getElementById('detail-actions');
+    const backBtn = document.getElementById('back-to-grid');
 
-    function openProjectById(id,pushState=true){const p=site.projects.find(x=>x.id===id);if(!p)return showGridOnly();detailTitle.innerText=p.title;detailCoverImg.src=p.cover;detailCoverImg.alt=p.title;detailSummary.innerText=p.summary;detailMetaList.innerHTML='';for(const k in p.meta){const li=document.createElement('li');li.innerText=`${k.charAt(0).toUpperCase()+k.slice(1)}: ${p.meta[k]}`;detailMetaList.appendChild(li)}detailBody.innerHTML=p.body;detailImages.innerHTML='';(p.images||[]).forEach(src=>{const im=document.createElement('img');im.src=src;im.alt=p.title;im.style.width='100%';im.style.borderRadius='8px';detailImages.appendChild(im)});detailActions.innerHTML='';document.getElementById('grid').style.display='none';detail.classList.add('visible');detail.setAttribute('aria-hidden','false');detail.scrollIntoView({behavior:'smooth',block:'start'});if(pushState)location.hash=p.id}
-    function showGridOnly(){detail.classList.remove('visible');detail.setAttribute('aria-hidden','true');document.getElementById('grid').style.display='';if(location.hash)history.replaceState('',document.title,location.pathname+location.search)}
-    backBtn.addEventListener('click',()=>{showGridOnly()});
-    function handleHash(){const id=location.hash.replace('#','');if(!id){showGridOnly();return}openProjectById(id,false)}window.addEventListener('hashchange',handleHash);handleHash();
-    document.querySelectorAll('[data-link]').forEach(a=>{a.addEventListener('click',(e)=>{e.preventDefault();const href=a.getAttribute('href');document.querySelector(href).scrollIntoView({behavior:'smooth'})})});
-    const langToggle=document.getElementById('lang-toggle');let lang='fr';function setLang(l){lang=l;if(l==='en'){document.documentElement.lang='en';document.getElementById('hero-title').innerHTML=`Hello — I'm <span id="author">${site.name}</span>`;document.getElementById('hero-desc').innerText='I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.';langToggle.innerText='FR'}else{document.documentElement.lang='fr';document.getElementById('hero-title').innerHTML=`Bonjour — je suis <span id="author">${site.name}</span>`;document.getElementById('hero-desc').innerText='Je travaille en CFD, modélisation de la turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.';langToggle.innerText='EN'}}langToggle.addEventListener('click',()=>setLang(lang==='fr'?'en':'fr'));setLang('fr');
-    const form=document.getElementById('contact-form');const result=document.getElementById('form-result');form.addEventListener('submit',async e=>{e.preventDefault();result.innerText='Envoi...';try{const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});if(res.ok){result.innerText='Message envoyé — merci.';form.reset()}else{const json=await res.json();result.innerText=json.error||'Erreur lors de l\'envoi.'}}catch(err){result.innerText='Erreur lors de l\'envoi — vérifie le endpoint.'}});
+    function openProjectById(id, pushState=true){
+      const p = site.projects.find(x=>x.id===id);
+      if(!p) return showGridOnly();
+      // fill
+      detailTitle.innerText = p.title;
+      detailCoverImg.src = p.cover;
+      detailCoverImg.alt = p.title;
+      detailSummary.innerText = p.summary;
+      detailMetaList.innerHTML = '';
+      for(const k in p.meta){
+        const li = document.createElement('li'); li.innerText = `${k.charAt(0).toUpperCase()+k.slice(1)}: ${p.meta[k]}`; detailMetaList.appendChild(li);
+      }
+      detailBody.innerHTML = p.body;
+      detailImages.innerHTML = '';
+      (p.images||[]).forEach(src=>{ const im = document.createElement('img'); im.src = src; im.alt = p.title; im.style.width='100%'; im.style.borderRadius='8px'; detailImages.appendChild(im); });
+      detailActions.innerHTML = '';
+
+      // show pane
+      document.getElementById('grid').style.display = 'none';
+      detail.classList.add('visible'); detail.setAttribute('aria-hidden','false');
+
+      // scroll into view
+      detail.scrollIntoView({behavior:'smooth',block:'start'});
+
+      // update hash
+      if(pushState) location.hash = p.id;
+    }
+
+    function showGridOnly(){
+      detail.classList.remove('visible'); detail.setAttribute('aria-hidden','true');
+      document.getElementById('grid').style.display = '';
+      // remove hash
+      if(location.hash) history.replaceState('', document.title, location.pathname + location.search);
+    }
+
+    // back button
+    backBtn.addEventListener('click', ()=>{
+      showGridOnly();
+    });
+
+    // hashchange handling (deep linking)
+    function handleHash(){
+      const id = location.hash.replace('#','');
+      if(!id) { showGridOnly(); return; }
+      openProjectById(id,false);
+    }
+    window.addEventListener('hashchange', handleHash);
+    // initial check
+    handleHash();
+
+    // nav links scroll
+    document.querySelectorAll('[data-link]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault(); const href = a.getAttribute('href'); document.querySelector(href).scrollIntoView({behavior:'smooth'});
+      });
+    });
+
+    // language toggle (simple)
+    const langToggle = document.getElementById('lang-toggle');
+    let lang = 'fr';
+    function setLang(l){
+      lang = l;
+      if(l==='en'){
+        document.documentElement.lang = 'en'; document.getElementById('hero-title').innerHTML = `Hello — I'm <span id="author">${site.name}</span>`;
+        document.getElementById('hero-desc').innerText = 'I work on CFD, turbulence modelling, high-performance simulation and OpenFOAM. On this site I publish projects with code, visualizations and analysis.';
+        langToggle.innerText = 'FR';
+      }else{
+        document.documentElement.lang = 'fr'; document.getElementById('hero-title').innerHTML = `Bonjour — je suis <span id="author">${site.name}</span>`;
+        document.getElementById('hero-desc').innerText = 'Je travaille en CFD, modélisation de la turbulence, simulation haute performance et OpenFOAM. Sur ce site je publie des projets avec code, visualisations et analyses.';
+        langToggle.innerText = 'EN';
+      }
+    }
+    langToggle.addEventListener('click', ()=> setLang(lang==='fr'?'en':'fr'));
+    setLang('fr');
+
+    // contact form simple handling
+    const form = document.getElementById('contact-form');
+    const result = document.getElementById('form-result');
+    form.addEventListener('submit', async e=>{
+      e.preventDefault(); result.innerText = 'Envoi...';
+      try{
+        const res = await fetch(form.action, {method:'POST', body:new FormData(form), headers:{'Accept':'application/json'}});
+        if(res.ok){ result.innerText = 'Message envoyé — merci.'; form.reset(); }
+        else { const json = await res.json(); result.innerText = json.error || 'Erreur lors de l\'envoi.' }
+      }catch(err){ result.innerText = 'Erreur lors de l\'envoi — vérifie le endpoint.' }
+    });
+
   </script>
 </body>
 </html>
